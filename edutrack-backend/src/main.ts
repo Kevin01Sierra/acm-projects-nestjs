@@ -33,12 +33,12 @@ async function bootstrap() {
   console.log(`
   ╔═══════════════════════════════════════════════════════╗
   ║                                                       ║
-  ║   🎓 Sistema EduTrack - Backend API                  ║
+  ║   🎓 Sistema EduTrack - Backend API                   ║
   ║                                                       ║
-  ║   🚀 Servidor corriendo en: http://localhost:${port}    ║
-  ║   📚 API base: http://localhost:${port}/api/v1          ║
+  ║   🚀 Servidor corriendo en: http://localhost:${port}     ║
+  ║   📚 API base: http://localhost:${port}/api/v1           ║
   ║   🗄️  Base de datos: PostgreSQL                       ║
-  ║   📝 Entorno: ${process.env.NODE_ENV || 'development'}                    ║
+  ║   📝 Entorno: ${process.env.NODE_ENV || 'development'}                             ║
   ║                                                       ║
   ╚═══════════════════════════════════════════════════════╝
   `);
