@@ -90,6 +90,10 @@ git clone https://github.com/Kevin01Sierra/acm-projects-nestjs.git
 ```bash
 cd rick-morty-crud
 ```
+2.1. **Abre la carpeta del proyecto que quieras probar, por ejemplo:**
+```bash
+cd edutrack-backend
+```
 
 3. **Instala las dependencias:**
 ```bash
