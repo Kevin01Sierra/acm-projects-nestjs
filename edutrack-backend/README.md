@@ -2,8 +2,6 @@
 
 ## Proyecto Final - Desarrollo Backend con NestJS
 
----
-
 ## 📋 Descripción del Proyecto
 
 **EduTrack** es un sistema de gestión académica desarrollado con NestJS que permite administrar usuarios, profesores, estudiantes, cursos e inscripciones para una institución educativa.
