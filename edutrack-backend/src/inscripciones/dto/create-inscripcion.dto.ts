@@ -1,8 +1,10 @@
-import { IsInt, IsNotEmpty, IsOptional, IsEnum, IsNumber, IsString, Min, Max, IsDateString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsEnum, IsNumber, IsString, IsDate, Min, Max } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateInscripcionDto {
-  @IsDateString({}, { message: 'La fecha de inscripción debe ser una fecha válida' })
+  @Type(() => Date)
   @IsNotEmpty({ message: 'La fecha de inscripción es obligatoria' })
+  @IsDate({ message: 'La fecha de inscripción debe ser una fecha válida' })
   fecha_inscripcion: Date;
 
   @IsNumber({}, { message: 'La nota debe ser un número' })

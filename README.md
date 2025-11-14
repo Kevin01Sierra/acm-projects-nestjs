@@ -49,6 +49,7 @@ Aquí encontrarás desde APIs REST básicas hasta aplicaciones empresariales com
 ```bash
 acm-projects-nestjs/
 ├── rick-morty-crud/   # CRUD con API de Rick and Morty
+├── edutrack-bakend/   # CRUD de la API para el proyecto final
 ├── README.md          # Este documento (presentación principal)
 └── .gitignore         # Archivos ignorados por Git
 ```
