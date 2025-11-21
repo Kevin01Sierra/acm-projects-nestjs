@@ -5,6 +5,7 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import Alert from '../common/Alert';
 import styles from './Login.module.css';
+import { validateLoginForm } from '../../utils/validators';
 
 const Login = () => {
   const { login } = useAuth();
@@ -19,27 +20,15 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Limpiar error del campo cuando el usuario empiece a escribir
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
   const validate = () => {
-    const newErrors = {};
-
-    if (!formData.correo) {
-      newErrors.correo = 'El correo es obligatorio';
-    } else if (!/\S+@\S+\.\S+/.test(formData.correo)) {
-      newErrors.correo = 'El correo no es válido';
-    }
-
-    if (!formData.contrasena) {
-      newErrors.contrasena = 'La contraseña es obligatoria';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const validationErrors = validateLoginForm(formData);
+    setErrors(validationErrors);
+    return Object.keys(validationErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {

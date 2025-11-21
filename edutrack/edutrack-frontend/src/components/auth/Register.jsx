@@ -5,6 +5,7 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import Alert from '../common/Alert';
 import styles from './Register.module.css';
+import { validateRegisterForm } from '../../utils/validators';
 
 const Register = () => {
   const { register } = useAuth();
@@ -28,36 +29,9 @@ const Register = () => {
   };
 
   const validate = () => {
-    const newErrors = {};
-
-    if (!formData.nombre_completo || formData.nombre_completo.length < 3) {
-      newErrors.nombre_completo = 'El nombre debe tener al menos 3 caracteres';
-    }
-
-    if (!formData.correo) {
-      newErrors.correo = 'El correo es obligatorio';
-    } else if (!/\S+@\S+\.\S+/.test(formData.correo)) {
-      newErrors.correo = 'El correo no es válido';
-    }
-
-    if (!formData.contrasena) {
-      newErrors.contrasena = 'La contraseña es obligatoria';
-    } else if (formData.contrasena.length < 8) {
-      newErrors.contrasena = 'La contraseña debe tener al menos 8 caracteres';
-    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(formData.contrasena)) {
-      newErrors.contrasena = 'Debe contener mayúscula, minúscula, número y carácter especial';
-    }
-
-    if (formData.contrasena !== formData.confirmarContrasena) {
-      newErrors.confirmarContrasena = 'Las contraseñas no coinciden';
-    }
-
-    if (!formData.rol) {
-      newErrors.rol = 'Debes seleccionar un rol';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const validationErrors = validateRegisterForm(formData);
+    setErrors(validationErrors);
+    return Object.keys(validationErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {

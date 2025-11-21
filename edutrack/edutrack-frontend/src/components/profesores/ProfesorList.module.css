@@ -30,23 +30,21 @@
   margin-bottom: 15px;
   border-bottom: 1px solid #f0f0f0;
   padding-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .cardHeader h3 {
-  margin: 0;
-  font-size: 1.1rem;
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
   color: var(--primary-dark);
 }
 
 .badge {
-  padding: 4px 10px;
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  padding: 4px 8px;
   border-radius: 12px;
   font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .cardBody {
@@ -58,6 +56,15 @@
   margin: 8px 0;
   color: var(--text-secondary);
   font-size: 0.95rem;
+}
+
+.bio {
+  margin-top: 15px !important;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cardFooter {

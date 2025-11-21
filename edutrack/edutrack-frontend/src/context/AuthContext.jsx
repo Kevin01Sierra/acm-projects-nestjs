@@ -1,9 +1,10 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import authService from '../services/authService';
 
 const AuthContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -36,8 +37,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (correo, contrasena) => {
     try {
-      const response = await api.post('/auth/login', { correo, contrasena });
-      const { token: newToken, user: userData } = response.data;
+      const data = await authService.login({ correo, contrasena });
+      const { token: newToken, user: userData } = data;
 
       // Guardar en estado y localStorage
       setToken(newToken);
@@ -59,8 +60,8 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await api.post('/auth/register', userData);
-      const { token: newToken, user: newUser } = response.data;
+      const data = await authService.register(userData);
+      const { token: newToken, user: newUser } = data;
 
       // Guardar en estado y localStorage
       setToken(newToken);
