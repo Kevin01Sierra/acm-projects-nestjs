@@ -6,6 +6,7 @@ import { ProfesoresModule } from './profesores/profesores.module';
 import { EstudiantesModule } from './estudiantes/estudiantes.module';
 import { CursosModule } from './cursos/cursos.module';
 import { InscripcionesModule } from './inscripciones/inscripciones.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { InscripcionesModule } from './inscripciones/inscripciones.module';
     }),
 
     // Módulos de la aplicación
+    AuthModule,
     UsersModule,
     ProfesoresModule,
     EstudiantesModule,

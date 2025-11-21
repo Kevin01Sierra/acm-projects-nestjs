@@ -1,0 +1,156 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.button:hover:not(.disabled):not(.loading) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.button:active:not(.disabled):not(.loading) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Variantes */
+.primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+}
+
+.primary:hover:not(.disabled) {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+}
+
+.secondary {
+  background: var(--pastel-purple);
+  color: var(--gray-800);
+}
+
+.secondary:hover:not(.disabled) {
+  background: var(--pastel-pink);
+}
+
+.success {
+  background: var(--pastel-green);
+  color: var(--gray-800);
+}
+
+.success:hover:not(.disabled) {
+  background: #9DD99D;
+}
+
+.danger {
+  background: var(--accent);
+  color: white;
+}
+
+.danger:hover:not(.disabled) {
+  background: var(--accent-light);
+}
+
+.warning {
+  background: var(--pastel-yellow);
+  color: var(--gray-800);
+}
+
+.outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary-dark);
+}
+
+.outline:hover:not(.disabled) {
+  background: var(--primary);
+  color: white;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--primary-dark);
+  box-shadow: none;
+}
+
+.ghost:hover:not(.disabled) {
+  background: var(--gray-100);
+}
+
+/* Tamaños */
+.sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.md {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+/* Estados */
+.fullWidth {
+  width: 100%;
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.loading {
+  cursor: wait;
+  pointer-events: none;
+}
+
+/* Spinner de carga */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Efecto ripple */
+.button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.button:active:not(.disabled)::before {
+  width: 300px;
+  height: 300px;
+}
