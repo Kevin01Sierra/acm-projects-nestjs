@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import cursosService from '../../services/cursosService';
+import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
 import Card from '../common/Card';
 import Button from '../common/Button';
@@ -10,6 +11,7 @@ const CursosList = () => {
   const [cursos, setCursos] = useState([]);
   const [loading, setLoading] = useState(true);
   const { showNotification } = useNotification();
+  const { isAdmin, isProfesor, isEstudiante, user } = useAuth();
 
   useEffect(() => {
     loadCursos();
@@ -17,7 +19,16 @@ const CursosList = () => {
 
   const loadCursos = async () => {
     try {
-      const data = await cursosService.getAll();
+      let data;
+      if (isProfesor()) {
+        data = await cursosService.getAll({ profesor_id: user.profesor.id });
+      } else if (isEstudiante()) {
+        // Estudiantes ven sus cursos inscritos (o disponibles, según lógica de negocio)
+        // Usamos el nuevo endpoint backend para filtrar por estudiante
+        data = await cursosService.getAll({ estudiante_id: user.estudiante.id });
+      } else {
+        data = await cursosService.getAll();
+      }
       setCursos(data);
     } catch (error) {
       showNotification('Error al cargar cursos', 'error');
@@ -44,9 +55,11 @@ const CursosList = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>Cursos</h2>
-        <Link to="/cursos/nuevo">
-          <Button variant="primary">Nuevo Curso</Button>
-        </Link>
+        {(isAdmin() || isProfesor()) && (
+          <Link to="/cursos/nuevo">
+            <Button variant="primary">Nuevo Curso</Button>
+          </Link>
+        )}
       </div>
 
       <div className={styles.grid}>
@@ -67,16 +80,20 @@ const CursosList = () => {
               </p>
             </div>
             <div className={styles.cardFooter}>
-              <Link to={`/cursos/editar/${curso.id}`}>
-                <Button variant="secondary" size="small">Editar</Button>
-              </Link>
-              <Button 
-                variant="danger" 
-                size="small" 
-                onClick={() => handleDelete(curso.id)}
-              >
-                Eliminar
-              </Button>
+              {(isAdmin() || isProfesor()) && (
+                <Link to={`/cursos/editar/${curso.id}`}>
+                  <Button variant="secondary" size="small">Editar</Button>
+                </Link>
+              )}
+              {isAdmin() && (
+                <Button 
+                  variant="danger" 
+                  size="small" 
+                  onClick={() => handleDelete(curso.id)}
+                >
+                  Eliminar
+                </Button>
+              )}
             </div>
           </Card>
         ))}

@@ -98,4 +98,11 @@ export class CursosService {
       relations: ['profesor', 'profesor.usuario']
     });
   }
+
+  async findByEstudiante(estudianteId: number): Promise<Curso[]> {
+    return await this.cursoRepository.find({
+      where: { inscripciones: { estudiante: { id: estudianteId } } },
+      relations: ['profesor', 'profesor.usuario', 'inscripciones']
+    });
+  }
 }

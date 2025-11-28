@@ -102,6 +102,10 @@ export const AuthProvider = ({ children }) => {
     return user?.rol === 'estudiante';
   };
 
+  const isAdmin = () => {
+    return user?.rol === 'admin';
+  };
+
   const value = {
     user,
     token,
@@ -112,6 +116,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     isProfesor,
     isEstudiante,
+    isAdmin,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

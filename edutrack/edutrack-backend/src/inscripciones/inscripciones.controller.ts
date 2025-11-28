@@ -9,17 +9,23 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
-  Query
+  Query,
+  UseGuards
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { InscripcionesService } from './inscripciones.service';
 import { CreateInscripcionDto } from './dto/create-inscripcion.dto';
 import { UpdateInscripcionDto } from './dto/update-inscripcion.dto';
 
 @Controller('inscripciones')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class InscripcionesController {
   constructor(private readonly inscripcionesService: InscripcionesService) {}
 
   @Post()
+  @Roles('estudiante', 'admin')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createInscripcionDto: CreateInscripcionDto) {
     return this.inscripcionesService.create(createInscripcionDto);
@@ -49,6 +55,7 @@ export class InscripcionesController {
   }
 
   @Patch(':id')
+  @Roles('admin')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateInscripcionDto: UpdateInscripcionDto
@@ -57,6 +64,7 @@ export class InscripcionesController {
   }
 
   @Delete(':id')
+  @Roles('admin')
   @HttpCode(HttpStatus.OK)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.inscripcionesService.remove(id);

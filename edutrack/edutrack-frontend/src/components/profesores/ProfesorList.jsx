@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import profesoresService from '../../services/profesoresService';
+import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
 import Card from '../common/Card';
 import Button from '../common/Button';
@@ -10,6 +11,7 @@ const ProfesorList = () => {
   const [profesores, setProfesores] = useState([]);
   const [loading, setLoading] = useState(true);
   const { showNotification } = useNotification();
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     loadProfesores();
@@ -44,9 +46,11 @@ const ProfesorList = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>Profesores</h2>
-        <Link to="/profesores/nuevo">
-          <Button variant="primary">Nuevo Profesor</Button>
-        </Link>
+        {isAdmin() && (
+          <Link to="/profesores/nuevo">
+            <Button variant="primary">Nuevo Profesor</Button>
+          </Link>
+        )}
       </div>
 
       <div className={styles.grid}>
@@ -64,16 +68,20 @@ const ProfesorList = () => {
               )}
             </div>
             <div className={styles.cardFooter}>
-              <Link to={`/profesores/editar/${profesor.id}`}>
-                <Button variant="secondary" size="small">Editar</Button>
-              </Link>
-              <Button 
-                variant="danger" 
-                size="small" 
-                onClick={() => handleDelete(profesor.id)}
-              >
-                Eliminar
-              </Button>
+              {isAdmin() && (
+                <>
+                  <Link to={`/profesores/editar/${profesor.id}`}>
+                    <Button variant="secondary" size="small">Editar</Button>
+                  </Link>
+                  <Button 
+                    variant="danger" 
+                    size="small" 
+                    onClick={() => handleDelete(profesor.id)}
+                  >
+                    Eliminar
+                  </Button>
+                </>
+              )}
             </div>
           </Card>
         ))}

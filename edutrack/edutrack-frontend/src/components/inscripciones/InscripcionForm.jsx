@@ -4,6 +4,7 @@ import inscripcionesService from '../../services/inscripcionesService';
 import estudiantesService from '../../services/estudiantesService';
 import cursosService from '../../services/cursosService';
 import { useNotification } from '../../context/NotificationContext';
+import { useAuth } from '../../context/AuthContext';
 import { validateInscripcionForm } from '../../utils/validators';
 import { ESTADOS_INSCRIPCION, ESTADOS_INSCRIPCION_LABELS } from '../../utils/constants';
 import Input from '../common/Input';
@@ -15,6 +16,7 @@ const InscripcionForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { showNotification } = useNotification();
+  const { isEstudiante, user } = useAuth();
   const isEdit = !!id;
 
   const [formData, setFormData] = useState({
@@ -39,12 +41,26 @@ const InscripcionForm = () => {
 
   const loadData = async () => {
     try {
-      const [estudiantesData, cursosData] = await Promise.all([
-        estudiantesService.getAll(),
-        cursosService.getAll()
-      ]);
-      setEstudiantes(estudiantesData);
+      const promises = [cursosService.getAll()];
+      
+      if (!isEstudiante()) {
+        promises.push(estudiantesService.getAll());
+      }
+
+      const [cursosData, estudiantesData] = await Promise.all(promises);
+      
       setCursos(cursosData);
+      if (estudiantesData) {
+        setEstudiantes(estudiantesData);
+      }
+      
+      // Si es estudiante, setear su ID automáticamente
+      if (isEstudiante() && user?.estudiante?.id) {
+        setFormData(prev => ({
+          ...prev,
+          estudiante_id: user.estudiante.id
+        }));
+      }
     } catch (error) {
       showNotification('Error al cargar listas', 'error');
     }
@@ -114,20 +130,26 @@ const InscripcionForm = () => {
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label className={styles.label}>Estudiante</label>
-            <select
-              name="estudiante_id"
-              value={formData.estudiante_id}
-              onChange={handleChange}
-              className={styles.select}
-              disabled={isEdit}
-            >
-              <option value="">Seleccione un estudiante</option>
-              {estudiantes.map(est => (
-                <option key={est.id} value={est.id}>
-                  {est.usuario?.nombre_completo}
-                </option>
-              ))}
-            </select>
+            {isEstudiante() ? (
+              <div className={styles.readOnlyField}>
+                {user.nombre_completo}
+              </div>
+            ) : (
+              <select
+                name="estudiante_id"
+                value={formData.estudiante_id}
+                onChange={handleChange}
+                className={styles.select}
+                disabled={isEdit}
+              >
+                <option value="">Seleccione un estudiante</option>
+                {estudiantes.map(est => (
+                  <option key={est.id} value={est.id}>
+                    {est.usuario?.nombre_completo}
+                  </option>
+                ))}
+              </select>
+            )}
             {errors.estudiante_id && <span className={styles.error}>{errors.estudiante_id}</span>}
           </div>
 

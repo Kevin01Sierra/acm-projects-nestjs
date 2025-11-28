@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import estudiantesService from '../../services/estudiantesService';
+import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
 import Card from '../common/Card';
 import Button from '../common/Button';
@@ -10,6 +11,7 @@ const EstudiantesList = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const [loading, setLoading] = useState(true);
   const { showNotification } = useNotification();
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     loadEstudiantes();
@@ -44,9 +46,11 @@ const EstudiantesList = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>Estudiantes</h2>
-        <Link to="/estudiantes/nuevo">
-          <Button variant="primary">Nuevo Estudiante</Button>
-        </Link>
+        {isAdmin() && (
+          <Link to="/estudiantes/nuevo">
+            <Button variant="primary">Nuevo Estudiante</Button>
+          </Link>
+        )}
       </div>
 
       <div className={styles.grid}>
@@ -62,16 +66,20 @@ const EstudiantesList = () => {
               <p><strong>Ingreso:</strong> {estudiante.anio_ingreso}</p>
             </div>
             <div className={styles.cardFooter}>
-              <Link to={`/estudiantes/editar/${estudiante.id}`}>
-                <Button variant="secondary" size="small">Editar</Button>
-              </Link>
-              <Button 
-                variant="danger" 
-                size="small" 
-                onClick={() => handleDelete(estudiante.id)}
-              >
-                Eliminar
-              </Button>
+              {isAdmin() && (
+                <>
+                  <Link to={`/estudiantes/editar/${estudiante.id}`}>
+                    <Button variant="secondary" size="small">Editar</Button>
+                  </Link>
+                  <Button 
+                    variant="danger" 
+                    size="small" 
+                    onClick={() => handleDelete(estudiante.id)}
+                  >
+                    Eliminar
+                  </Button>
+                </>
+              )}
             </div>
           </Card>
         ))}

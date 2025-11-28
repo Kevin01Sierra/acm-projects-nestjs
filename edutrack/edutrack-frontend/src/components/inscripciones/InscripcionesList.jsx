@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import inscripcionesService from '../../services/inscripcionesService';
+import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
 import { ESTADOS_INSCRIPCION_LABELS, ESTADOS_INSCRIPCION_COLORS } from '../../utils/constants';
 import Card from '../common/Card';
@@ -11,6 +12,7 @@ const InscripcionesList = () => {
   const [inscripciones, setInscripciones] = useState([]);
   const [loading, setLoading] = useState(true);
   const { showNotification } = useNotification();
+  const { isAdmin, isEstudiante, user } = useAuth();
 
   useEffect(() => {
     loadInscripciones();
@@ -18,7 +20,12 @@ const InscripcionesList = () => {
 
   const loadInscripciones = async () => {
     try {
-      const data = await inscripcionesService.getAll();
+      let data;
+      if (isEstudiante()) {
+        data = await inscripcionesService.getAll({ estudiante_id: user.estudiante.id });
+      } else {
+        data = await inscripcionesService.getAll();
+      }
       setInscripciones(data);
     } catch (error) {
       showNotification('Error al cargar inscripciones', 'error');
@@ -45,9 +52,11 @@ const InscripcionesList = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>Inscripciones</h2>
-        <Link to="/inscripciones/nueva">
-          <Button variant="primary">Nueva Inscripción</Button>
-        </Link>
+        {(isAdmin() || isEstudiante()) && (
+          <Link to="/inscripciones/nueva">
+            <Button variant="primary">Nueva Inscripción</Button>
+          </Link>
+        )}
       </div>
 
       <div className={styles.grid}>
@@ -70,16 +79,20 @@ const InscripcionesList = () => {
               )}
             </div>
             <div className={styles.cardFooter}>
-              <Link to={`/inscripciones/editar/${inscripcion.id}`}>
-                <Button variant="secondary" size="small">Editar</Button>
-              </Link>
-              <Button 
-                variant="danger" 
-                size="small" 
-                onClick={() => handleDelete(inscripcion.id)}
-              >
-                Eliminar
-              </Button>
+              {isAdmin() && (
+                <Link to={`/inscripciones/editar/${inscripcion.id}`}>
+                  <Button variant="secondary" size="small">Editar</Button>
+                </Link>
+              )}
+              {isAdmin() && (
+                <Button 
+                  variant="danger" 
+                  size="small" 
+                  onClick={() => handleDelete(inscripcion.id)}
+                >
+                  Eliminar
+                </Button>
+              )}
             </div>
           </Card>
         ))}

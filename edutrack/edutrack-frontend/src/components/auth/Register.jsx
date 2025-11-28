@@ -171,6 +171,20 @@ const Register = () => {
                   <span className={styles.roleText}>Profesor</span>
                 </div>
               </label>
+
+              <label className={`${styles.roleOption} ${formData.rol === 'admin' ? styles.selected : ''}`}>
+                <input
+                  type="radio"
+                  name="rol"
+                  value="admin"
+                  checked={formData.rol === 'admin'}
+                  onChange={handleChange}
+                />
+                <div className={styles.roleContent}>
+                  <span className={styles.roleIcon}>🛡️</span>
+                  <span className={styles.roleText}>Admin</span>
+                </div>
+              </label>
             </div>
             {errors.rol && <span className={styles.errorMessage}>{errors.rol}</span>}
           </div>

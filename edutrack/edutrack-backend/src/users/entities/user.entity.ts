@@ -16,11 +16,8 @@ export class User {
   @Column({ type: 'varchar', length: 255 })
   contrasena: string;
 
-  @Column({ 
-    type: 'enum', 
-    enum: ['profesor', 'estudiante'],
-  })
-  rol: 'profesor' | 'estudiante';
+  @Column({ type: 'enum', enum: ['profesor', 'estudiante', 'admin'], default: 'estudiante' })
+  rol: 'profesor' | 'estudiante' | 'admin';
 
   @Column({ type: 'boolean', default: true })
   activo: boolean;

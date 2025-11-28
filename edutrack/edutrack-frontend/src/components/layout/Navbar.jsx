@@ -5,7 +5,7 @@ import Button from '../common/Button';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
-  const { user, logout, isProfesor, isEstudiante } = useAuth();
+  const { user, logout, isProfesor, isEstudiante, isAdmin } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const navigate = useNavigate();
@@ -53,6 +53,17 @@ const Navbar = () => {
               </Link>
             </>
           )}
+
+          {isAdmin() && (
+            <>
+              <Link to="/users" className={styles.navLink}>
+                👥 Usuarios
+              </Link>
+              <Link to="/cursos" className={styles.navLink}>
+                📚 Cursos
+              </Link>
+            </>
+          )}
         </div>
 
         {/* User Menu */}
@@ -64,7 +75,7 @@ const Navbar = () => {
             <div className={styles.userData}>
               <span className={styles.userName}>{user?.nombre_completo}</span>
               <span className={styles.userRole}>
-                {user?.rol === 'profesor' ? '👨‍🏫 Profesor' : '🎓 Estudiante'}
+                {user?.rol === 'profesor' ? '👨‍🏫 Profesor' : user?.rol === 'admin' ? '🛡️ Admin' : '🎓 Estudiante'}
               </span>
             </div>
             <span className={styles.dropdownIcon}>▼</span>
@@ -111,6 +122,17 @@ const Navbar = () => {
               </Link>
               <Link to="/inscripciones" className={styles.mobileLink} onClick={toggleMobileMenu}>
                 📝 Mis Inscripciones
+              </Link>
+            </>
+          )}
+
+          {isAdmin() && (
+            <>
+              <Link to="/users" className={styles.mobileLink} onClick={toggleMobileMenu}>
+                👥 Usuarios
+              </Link>
+              <Link to="/cursos" className={styles.mobileLink} onClick={toggleMobileMenu}>
+                📚 Cursos
               </Link>
             </>
           )}

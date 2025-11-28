@@ -7,6 +7,7 @@ import ProfesoresPage from './pages/ProfesoresPage';
 import EstudiantesPage from './pages/EstudiantesPage';
 import CursosPage from './pages/CursosPage';
 import InscripcionesPage from './pages/InscripcionesPage';
+import UsersPage from './pages/UsersPage';
 import Navbar from './components/layout/Navbar';
 import './App.css';
 
@@ -45,6 +46,32 @@ const PublicRoute = ({ children }) => {
   }
 
   return children;
+};
+
+// Componente para rutas de Admin
+const AdminRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
+
+  if (loading) {
+    return <div className="loading-container"><div className="loader"></div><p className="loading-text">Cargando...</p></div>;
+  }
+
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" />;
+  }
+
+  if (!isAdmin()) {
+    return <Navigate to="/dashboard" />;
+  }
+
+  return (
+    <>
+      <Navbar />
+      <div className="container">
+        {children}
+      </div>
+    </>
+  );
 };
 
 function App() {
@@ -91,6 +118,12 @@ function App() {
         <ProtectedRoute>
           <InscripcionesPage />
         </ProtectedRoute>
+      } />
+
+      <Route path="/users" element={
+        <AdminRoute>
+          <UsersPage />
+        </AdminRoute>
       } />
 
       {/* Redirección por defecto */}

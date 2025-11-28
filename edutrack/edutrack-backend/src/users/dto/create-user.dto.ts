@@ -22,9 +22,9 @@ export class CreateUserDto {
   )
   contrasena: string;
 
-  @IsEnum(['profesor', 'estudiante'], { 
-    message: 'El rol debe ser "profesor" o "estudiante"' 
+  @IsEnum(['profesor', 'estudiante', 'admin'], { 
+    message: 'El rol debe ser "profesor", "estudiante" o "admin"' 
   })
   @IsNotEmpty({ message: 'El rol es obligatorio' })
-  rol: 'profesor' | 'estudiante';
+  rol: 'profesor' | 'estudiante' | 'admin';
 }
