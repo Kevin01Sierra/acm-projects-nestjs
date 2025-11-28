@@ -29,6 +29,7 @@ const InscripcionForm = () => {
   
   const [estudiantes, setEstudiantes] = useState([]);
   const [cursos, setCursos] = useState([]);
+  const [inscripcionesEstudiante, setInscripcionesEstudiante] = useState([]);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -45,13 +46,19 @@ const InscripcionForm = () => {
       
       if (!isEstudiante()) {
         promises.push(estudiantesService.getAll());
+      } else if (user?.estudiante?.id) {
+        // Si es estudiante, cargar sus inscripciones para filtrar cursos
+        promises.push(inscripcionesService.getAll({ estudiante_id: user.estudiante.id }));
       }
 
-      const [cursosData, estudiantesData] = await Promise.all(promises);
+      const [cursosData, estudiantesOrInscripcionesData] = await Promise.all(promises);
       
       setCursos(cursosData);
-      if (estudiantesData) {
-        setEstudiantes(estudiantesData);
+      
+      if (!isEstudiante() && estudiantesOrInscripcionesData) {
+        setEstudiantes(estudiantesOrInscripcionesData);
+      } else if (isEstudiante() && estudiantesOrInscripcionesData) {
+        setInscripcionesEstudiante(estudiantesOrInscripcionesData);
       }
       
       // Si es estudiante, setear su ID automáticamente
@@ -163,11 +170,20 @@ const InscripcionForm = () => {
               disabled={isEdit}
             >
               <option value="">Seleccione un curso</option>
-              {cursos.map(curso => (
-                <option key={curso.id} value={curso.id}>
-                  {curso.nombre} - {curso.codigo_curso}
-                </option>
-              ))}
+              {cursos
+                .filter(curso => {
+                  // Si es estudiante, filtrar cursos ya inscritos
+                  if (isEstudiante() && !isEdit) {
+                    return !inscripcionesEstudiante.some(insc => insc.curso_id === curso.id);
+                  }
+                  return true;
+                })
+                .map(curso => (
+                  <option key={curso.id} value={curso.id}>
+                    {curso.nombre} - {curso.codigo_curso}
+                  </option>
+                ))
+              }
             </select>
             {errors.curso_id && <span className={styles.error}>{errors.curso_id}</span>}
           </div>
@@ -183,32 +199,40 @@ const InscripcionForm = () => {
 
           <div className={styles.formGroup}>
             <label className={styles.label}>Estado</label>
-            <select
-              name="estado"
-              value={formData.estado}
-              onChange={handleChange}
-              className={styles.select}
-            >
-              {Object.entries(ESTADOS_INSCRIPCION).map(([key, value]) => (
-                <option key={key} value={value}>
-                  {ESTADOS_INSCRIPCION_LABELS[value]}
-                </option>
-              ))}
-            </select>
+            {isEstudiante() && !isEdit ? (
+              <div className={styles.readOnlyField}>
+                {ESTADOS_INSCRIPCION_LABELS[ESTADOS_INSCRIPCION.INSCRITO]}
+              </div>
+            ) : (
+              <select
+                name="estado"
+                value={formData.estado}
+                onChange={handleChange}
+                className={styles.select}
+              >
+                {Object.entries(ESTADOS_INSCRIPCION).map(([key, value]) => (
+                  <option key={key} value={value}>
+                    {ESTADOS_INSCRIPCION_LABELS[value]}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
-          <Input
-            label="Nota Final"
-            name="nota"
-            type="number"
-            step="0.1"
-            min="0"
-            max="5"
-            value={formData.nota}
-            onChange={handleChange}
-            error={errors.nota}
-            placeholder="Opcional"
-          />
+          {!(isEstudiante() && !isEdit) && (
+            <Input
+              label="Nota Final"
+              name="nota"
+              type="number"
+              step="0.1"
+              min="0"
+              max="5"
+              value={formData.nota}
+              onChange={handleChange}
+              error={errors.nota}
+              placeholder="Opcional"
+            />
+          )}
 
           <div className={styles.actions}>
             <Button 
